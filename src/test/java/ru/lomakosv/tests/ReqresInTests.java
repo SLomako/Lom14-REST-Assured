@@ -102,12 +102,14 @@ public class ReqresInTests {
 
     @Test
     void checkListResource() {
-        given().spec(request).
-                when()
+        given().
+                spec(request).
+        when()
                 .get("/unknown").
-                then()
+        then()
                 .log().all()
-                .statusCode(200).body("data.findAll {it.year > 2003}.name", hasItems("tigerlily"));
+                .statusCode(200)
+                .body("data.findAll {it.year > 2003}.name", hasItems("tigerlily"));
 
     }
 }
