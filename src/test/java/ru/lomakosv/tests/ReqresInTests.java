@@ -2,24 +2,25 @@ package ru.lomakosv.tests;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import ru.lomakosv.api.*;
+import ru.lomakosv.api.model.*;
 
 import java.time.Clock;
 
 import static io.restassured.RestAssured.*;
 import static io.restassured.http.ContentType.JSON;
+import static org.hamcrest.Matchers.hasItems;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static ru.lomakosv.tests.Specification.request;
 
 public class ReqresInTests {
-
-    private final static String URL = "https://reqres.in/";
 
     @Test
     void checkSingleUserDataEmail() {
         String expendDataEmail = "janet.weaver@reqres.in";
 
-        String actualDataEmail = given().
+        String actualDataEmail = given().spec(request).
         when()
-                .get(URL + "api/users/2").
+                .get("/users/2").
         then()
                 .log().all()
                 .statusCode(200).extract().path("data.email");
@@ -32,19 +33,19 @@ public class ReqresInTests {
         String name = "morpheus";
         String job = "leader";
         Users users = new Users("morpheus", "leader");
-        CreateUser createUser = given()
+        CreateUser createUser = given().spec(request)
                 .contentType(JSON)
                 .body(users).
         when()
-                .post(URL + "api/users").
+                .post("/users").
         then().
                 log().all().
                 statusCode(201).
                 extract().
                 as(CreateUser.class);
 
-        Assertions.assertNotNull(createUser.getId());
-        Assertions.assertNotNull(createUser.getCreatedAt());
+        assertNotNull(createUser.getId());
+        assertNotNull(createUser.getCreatedAt());
         Assertions.assertEquals(name, createUser.getName());
         Assertions.assertEquals(job, createUser.getJob());
     }
@@ -53,11 +54,11 @@ public class ReqresInTests {
     void usSuccessfulCreateUser() {
         String error = "Missing password";
         Register register = new Register("sydney@fife");
-        UnSuccessfulRegister unSuccessfulRegister = given()
+        UnSuccessfulRegister unSuccessfulRegister = given().spec(request)
                 .contentType(JSON)
                 .body(register).
         when()
-                .post(URL + "api/register").
+                .post("/register").
         then()
                 .statusCode(400)
                 .extract()
@@ -68,9 +69,9 @@ public class ReqresInTests {
 
     @Test
     void deleteUserTest() {
-        given().
+        given().spec(request).
         when().
-                delete(URL + "api/users/2").
+                delete("/users/2").
         then().
                 statusCode(204);
     }
@@ -78,11 +79,11 @@ public class ReqresInTests {
     @Test
     void timeTest() {
         Users users = new Users("morpheus", "zion resident");
-        CreateUserTime createUserTime = given().
+        CreateUserTime createUserTime = given().spec(request).
                 contentType(JSON).
                 body(users).
         when()
-                .put(URL + "api/users/2").
+                .put("/users/2").
         then()
                 .statusCode(200)
                 .extract()
@@ -96,6 +97,17 @@ public class ReqresInTests {
 
         System.out.println(currentTime);
         System.out.println(createUserTime.getUpdatedAt().replaceAll(regexUserTime, ""));
+
+    }
+
+    @Test
+    void checkListResource() {
+        given().spec(request).
+                when()
+                .get("/unknown").
+                then()
+                .log().all()
+                .statusCode(200).body("data.findAll {it.year > 2003}.name", hasItems("tigerlily"));
 
     }
 }
