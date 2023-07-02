@@ -1,4 +1,4 @@
-package ru.lomakosv.api.model;
+package ru.lomakosv.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;

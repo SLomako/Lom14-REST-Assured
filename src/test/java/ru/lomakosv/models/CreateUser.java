@@ -1,4 +1,4 @@
-package ru.lomakosv.api.model;
+package ru.lomakosv.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
@@ -8,6 +8,7 @@ import java.util.Date;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateUser {
+
     private String name;
     private String job;
     private String id;

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import ru.lomakosv.api.model.*;
+import ru.lomakosv.models.*;
 
 import java.time.Clock;
 
@@ -16,16 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static ru.lomakosv.tests.Specification.requestSpec;
 import static ru.lomakosv.tests.Specification.responseSpec;
 
+@Owner("SLomako")
 @Tag("api_test")
 @DisplayName("api тесты на сайт Reqres.in")
 public class ReqresInTests {
 
-    @DisplayName("email у users/2")
-    @Owner("SLomako")
     @Test
+    @DisplayName("email у users/2")
     void checkSingleUserDataEmail() {
         String expendDataEmail = "janet.weaver@reqres.in";
-
 
         String actualDataEmail = step("Запрос", () ->
         given(requestSpec).
@@ -39,9 +38,8 @@ public class ReqresInTests {
         });
     }
 
-    @DisplayName("соотвествие возвращаемых name и job отправленным")
-    @Owner("SLomako")
     @Test
+    @DisplayName("соотвествие возвращаемых name и job отправленным")
     void successfulCreateUser() {
         String name = "morpheus";
         String job = "leader";
@@ -65,9 +63,8 @@ public class ReqresInTests {
         Assertions.assertEquals(job, createUser.getJob());});
     }
 
-    @DisplayName("сообщения и статус-кода 400 при ошибки регистрации")
-    @Owner("SLomako")
     @Test
+    @DisplayName("сообщения и статус-кода 400 при ошибки регистрации")
     void usSuccessfulCreateUser() {
         String error = "Missing password";
         Register register = new Register("sydney@fife");
@@ -85,9 +82,8 @@ public class ReqresInTests {
         Assertions.assertEquals(error, unSuccessfulRegister.getError());});
     }
 
-    @DisplayName("статус кода 204 при запросе на удаление пользователя")
-    @Owner("SLomako")
     @Test
+    @DisplayName("статус кода 204 при запросе на удаление пользователя")
     void deleteUserTest() {
         step("Запрос");
         given(requestSpec).
@@ -98,9 +94,8 @@ public class ReqresInTests {
                 .statusCode(204);
     }
 
-    @DisplayName("одинаковость(до минут) системного времени у ново созданного пользователя и системы")
-    @Owner("SLomako")
     @Test
+    @DisplayName("одинаковость(до минут) системного времени у ново созданного пользователя и системы")
     void timeTest() {
         Users users = new Users("morpheus", "zion resident");
         CreateUserTime createUserTime = step("Запрос", () ->
@@ -120,9 +115,8 @@ public class ReqresInTests {
         Assertions.assertEquals(currentTime, createUserTime.getUpdatedAt().replaceAll(regex, ""));});
     }
 
-    @DisplayName("имя после сортировки ответа по году")
-    @Owner("SLomako")
     @Test
+    @DisplayName("имя после сортировки ответа по году")
     void checkListResource() {
         step("Запрос");
         given(requestSpec).
@@ -132,7 +126,6 @@ public class ReqresInTests {
                 .log().all()
                 .statusCode(200)
                 .body("data.findAll {it.year > 2003}.name", hasItems("tigerlily"));
-
     }
 }
 
